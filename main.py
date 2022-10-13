@@ -3,6 +3,27 @@ from tkinter import *
 from funcs import get_miles_from_zips, get_coordinates_from_zip
 
 
+def return_city_or_default(obj):
+    try:
+        return obj['zip info']['locality']
+    except:
+        return "none"
+
+
+def return_state_or_default(obj):
+    try:
+        return obj['zip info']['adminDistrict']
+    except:
+        return "XX"
+
+
+def return_mileage_or_default(obj):
+    try:
+        return obj['resourceSets'][0]['resources'][0]['travelDistance']
+    except:
+        return "-1"
+
+
 def get_trip_info():
     origin = origin_field.get()
     dest = dest_field.get()
@@ -21,26 +42,12 @@ def get_trip_info():
     if not dest.isdigit():
         tkinter.messagebox.showerror("Zip Code Error", "Destination Zip will need to be a numerical value")
         return None
-    try:
-        mystr.set(origin_payload['zip info']['locality'])
-    except:
-        mystr.set("None")
-    try:
-        origin_state.set(origin_payload['zip info']['adminDistrict'])
-    except:
-        origin_state.set("XX")
-    try:
-        destination_city.set(destination_payload['zip info']['locality'])
-    except:
-        destination_city.set("None")
-    try:
-        destination_state.set(destination_payload['zip info']['adminDistrict'])
-    except:
-        destination_state.set("XX")
-    try:
-        mileage.set(the_results['resourceSets'][0]['resources'][0]['travelDistance'])
-    except:
-        mileage.set("-1")
+
+    mystr.set(return_city_or_default(origin_payload))
+    origin_state.set(return_state_or_default(origin_payload))
+    destination_city.set(return_city_or_default(destination_payload))
+    destination_state.set(return_state_or_default(destination_payload))
+    mileage.set(return_mileage_or_default(the_results))
     return None
 
 
